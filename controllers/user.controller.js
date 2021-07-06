@@ -1,3 +1,5 @@
+const bcrypt = require("bcryptjs");
+
 const db = require("../models");
 const User = db.user;
 
@@ -22,15 +24,17 @@ exports.findById = async (req, res) => {
 
 exports.add = async (req, res) => {
     try {
-        const { first_name, last_name, description } = req.body;
+        const { first_name, last_name, email, password, description } = req.body;
 
-        if (!first_name || !last_name) {
+        if (!first_name || !last_name || !email || !password) {
             res.status(500).send({ status: false, message: "Some fields are missing from request" });
         }
 
         const data = {
             first_name: first_name,
             last_name: last_name,
+            email: email,
+            password: bcrypt.hashSync(password, 8),
             description: description
         }
 
@@ -43,15 +47,16 @@ exports.add = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const { id, first_name, last_name, description } = req.body;
+        const { id, first_name, last_name, email, description } = req.body;
 
-        if (!id, !first_name || !last_name) {
+        if (!id, !first_name || !last_name || !email) {
             res.status(500).send({ status: false, message: "Some fields are missing from request" });
         }
 
         const data = {
             first_name: first_name,
             last_name: last_name,
+            email: email,
             description: description
         }
 
